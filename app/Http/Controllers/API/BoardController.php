@@ -3,32 +3,78 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Board;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BoardController extends Controller
 {
     //
     public function create() {
-        return view('boards.create');
+          // Verifica se o usuário está logado
+    if (!Auth::check()) {
+        // Retorna uma resposta JSON informando que o usuário não está autenticado
+        return response()->json(['redirect' => route('login')], 401);
+    }
+        $boards = Board::all();
+        return view('boards.create', compact('boards'));
     }
 
-    public function index() {
-        return view('boards.index');
+ // Exibir todos os boards
+    public function index()
+    {
+        $boards = Board::all(); // Pode adicionar filtros ou ordenação, conforme necessário
+        return response()->json($boards);
     }
 
-    public function store(Request $request) {
-        //
+    // Exibir um board específico
+    public function show($id)
+    {
+        $board = Board::findOrFail($id);
+        return response()->json($board);
     }
 
-    public function show($id) {
-        //
+    // Criar um novo board
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $board = new Board();
+        $board->name = $request->name;
+        $board->description = $request->description;
+        $board->created_by = Auth::id(); // Usuário autenticado
+        $board->updated_by = Auth::id(); // Usuário autenticado
+        $board->save();
+
+        return response()->json($board, 201);
     }
 
-    public function update(Request $request, $id) {
-        //
+    // Atualizar um board
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $board = Board::findOrFail($id);
+        $board->name = $request->name;
+        $board->description = $request->description;
+        $board->updated_by = Auth::id(); // Usuário autenticado
+        $board->save();
+
+        return response()->json($board);
     }
 
-    public function destroy($id) {
-        //
+    // Deletar (soft delete) um board
+    public function destroy($id)
+    {
+        $board = Board::findOrFail($id);
+        $board->delete(); // Realiza o soft delete
+
+        return response()->json(['message' => 'Board deleted successfully']);
     }
 }

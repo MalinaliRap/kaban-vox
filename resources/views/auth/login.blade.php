@@ -52,10 +52,30 @@ $(document).ready(function() {
                 password: $('#password').val()
             },
             success: function(response) {
-                //salvar no localstorage
-                localStorage.setItem('token', response.token);
-                //redirecionar para a tela principal
-                window.location.href = 'http://localhost:8082/boards/create';
+                console.log(response); // Verifique a resposta do servidor
+                if (response.token) {
+
+                    // Salva o token no localStorage
+                        localStorage.setItem('token', response.token);
+
+                        // Redireciona para /boards/create, passando o token na requisição
+                        $.ajax({
+                            url: '/boards/create',
+                            method: 'GET',
+                            headers: {
+                                'Authorization': 'Bearer ' + response.token // Passa o token no cabeçalho
+                            },
+                            success: function() {
+                                window.location.href = '/boards/create';  // Agora o redirecionamento é feito
+                            },
+                            error: function(xhr) {
+                                if (xhr.status === 401) {
+                                    alert('Você não está autorizado a acessar essa página.');
+                                }
+                            }
+                        });
+
+                }
             },
             error: function(xhr) {
                 let errorMsg = 'Erro ao fazer login.';

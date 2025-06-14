@@ -63,11 +63,15 @@
                     @endif
 
                     {{-- Formulário para criar quadro --}}
-                    <form method="POST" action="{{ route('boards.store') }}">
+                    <form id="boardForm">
                         @csrf
                         <div class="mb-3">
                             <label for="name" class="form-label">Nome do Quadro:</label>
                             <input type="text" class="form-control" id="name" name="name" placeholder="Ex: Projeto Kanban" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Descrição:</label>
+                            <input type="text" class="form-control" id="description" name="description" placeholder="Ex: Descrição do quadro" required>
                         </div>
                         <button type="submit" class="btn btn-success w-100">Criar Quadro</button>
                     </form>
@@ -139,9 +143,12 @@
     </div>
 
 </div>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> {{-- jQuery --}}
+
 <script>
-     function logout() {
+    // Função de logout
+    function logout() {
         var token = localStorage.getItem('token'); // Ou de onde você armazena o token
 
         if (!token) {
@@ -169,8 +176,37 @@
     }
 
     $(document).ready(function() {
+        // Ao clicar no botão de logout
         $('#logoutButton').on('click', function() {
             logout();
+        });
+
+        // Manipulando o envio do formulário com AJAX para criar um novo Quadro
+        $('#boardForm').submit(function(e) {
+            e.preventDefault();  // Impede o envio normal do formulário
+
+            var name = $('#name').val();
+            var description = $('#description').val();
+            var csrf_token = $('input[name="_token"]').val();  // Pega o CSRF token
+
+            // Envia a requisição AJAX
+            $.ajax({
+                url: '{{ route('boards.store') }}',  // Rota de criação do quadro
+                method: 'POST',
+                data: {
+                    _token: csrf_token,
+                    name: name,
+                    description: description
+                },
+                success: function(response) {
+                    alert('Quadro criado com sucesso!');
+                    // Aqui você pode atualizar a página ou a lista de quadros sem recarregar
+                    // Exemplo: Adicionar o novo quadro à lista de quadros
+                },
+                error: function(xhr, status, error) {
+                    alert('Erro ao criar o quadro: ' + error);
+                }
+            });
         });
     });
 </script>
