@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -58,7 +59,9 @@ class AuthController extends Controller
     }
 
     function logout(Request $request) {
-        auth()->user()->token()->revoke();
+       // Revogar o token do usuário
+        $request->user()->token()->revoke();
+
         return response()->json(['message' => 'User logged out successfully.'], 200);
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return view('login');
+    return Auth::check() ? view('boards.create') : view('auth.login');
 });
 
 Route::get('/boards/create', function () {
