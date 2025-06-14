@@ -71,6 +71,10 @@ $(document).ready(function() {
             }
         });
     });
+
+    $(document).on('click', '.btn-close', function() {
+        $('#loginMessage').html('');
+    });
 });
 </script>
 
