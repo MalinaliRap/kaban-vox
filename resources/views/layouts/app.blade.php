@@ -30,7 +30,7 @@
     </nav>
 
     <!-- Conteúdo da página -->
-    <div class="container mt-5">
+    <div id="content" class="container mt-5" style="display:none;">
         @yield('content')  <!-- Aqui o conteúdo da página do usuário logado será injetado -->
     </div>
 
@@ -63,8 +63,42 @@
             });
         }
 
+        function validateToken() {
+            // Verificar se o token está presente no localStorage
+            var token = localStorage.getItem('token');
+
+            if (!token) {
+                // Se não houver token, redireciona para a tela de login
+                window.location.href = "{{ route('login.form') }}";
+            } else {
+                // Se o token estiver presente, valida com o backend
+                $.ajax({
+                    url: '{{ url("api/validate-token") }}', // Rota para validar o token
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + token // Envia o token no header
+                    },
+                    success: function(response) {
+                        // Se o token for válido, mostra o conteúdo
+                        if (response.valid) {
+                            $('#content').show(); // Exibe o conteúdo protegido
+                        } else {
+                            // Se o token não for válido, redireciona para o login
+                            window.location.href = "{{ route('login.form') }}";
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Se houver erro ao verificar o token, redireciona para o login
+                        window.location.href = "{{ route('login.form') }}";
+                    }
+                });
+            }
+        }
+
         $(document).ready(function() {
             // Ao clicar no botão de logout
+            validateToken();
+
             $('#logoutButton').on('click', function() {
                 logout(); // Chama a função de logout
             });

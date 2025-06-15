@@ -86,4 +86,13 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logout bem-sucedido!'], 200);
 
     }
+
+    public function validateToken(Request $request) {
+            // Verifica se o usuário está autenticado
+        if ($request->user()) {
+            return response()->json(['valid' => true], 200); // Token válido
+        }
+
+        return response()->json(['valid' => false], 401); // Token inválido
+    }
 }
