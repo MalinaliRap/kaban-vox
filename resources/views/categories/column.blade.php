@@ -1,8 +1,11 @@
 <!-- Card com botão para adicionar tarefa -->
 <div class="col-sm-12 col-md-4 col-lg-4">
     <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h4>{{ $category->name }}</h4>
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">{{ $category->name }}</h4>
+            <button class="btn btn-danger btn-sm delete-category-button" data-category-id="{{ $category->id }}">
+                <i class="fas fa-trash"></i>
+            </button>
         </div>
         <div class="card-body bg-dark">
             <div class="kanban-column" data-category-id="{{ $category->id }}">
@@ -85,6 +88,56 @@
                 });
             }
         }).disableSelection();
+
+        //task delete
+        $(document).on('click', '.delete-task-button', function() {
+            var taskCard = $(this).closest('.kanban-task');
+            var taskId = taskCard.data('task-id');
+
+            if (confirm('Tem certeza que deseja excluir esta tarefa?')) {
+                $.ajax({
+                    url: '{{ route('tasks.destroy', ':id') }}'.replace(':id', taskId),
+                    type: 'DELETE',
+                    headers: {
+                        authorization: 'Bearer ' + localStorage.getItem('token')
+                    },
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        taskCard.remove(); // Remove o card da tela
+                        console.log('Tarefa excluída com sucesso');
+                    },
+                    error: function() {
+                        alert('Erro ao excluir a tarefa.');
+                    }
+                });
+            }
+        });
+
+        //category delete
+        $(document).on('click', '.delete-category-button', function() {
+            var categoryId = $(this).data('category-id');
+            if (confirm('Tem certeza que deseja excluir esta categoria?')) {
+                $.ajax({
+                    url: '{{ route('categories.destroy', ':id') }}'.replace(':id', categoryId),
+                    type: 'DELETE',
+                    headers: {
+                        authorization: 'Bearer ' + localStorage.getItem('token')
+                    },
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        $('.kanban-column[data-category-id="' + categoryId + '"]').remove(); // Remove o card da tela
+                        console.log('Categoria excluida com sucesso');
+                    },
+                    error: function(error) {
+                        alert(error.responseJSON.message);
+                    }
+                });
+            }
+        })
     });
 </script>
 @endsection

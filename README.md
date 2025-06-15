@@ -28,5 +28,52 @@ Este projeto é uma aplicação web de gerenciamento de tarefas estilo **Kanban*
 ### 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/seu-repositorio.git
-cd seu-repositorio
+git clone [https://github.com/MalinaliRap/kaban-vox.git](https://github.com/MalinaliRap/kaban-vox.git)
+```
+
+### 2. Instalar as dependências do Laravel
+```bash
+composer install
+```
+
+### 3. Configurar o aquivo .env e configure o banco
+```bash
+cp .env.example .env
+
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=nome_do_banco
+DB_USERNAME=seu_usuario
+DB_PASSWORD=sua_senha
+```
+
+### 4. Gerar a chave da aplicação
+```bash
+php artisan key:generate
+```
+
+### 5. Rodar as migrations (criação das tabelas)
+```bash
+php artisan migrate
+```
+
+### 6. Rodar o seeder para criar o primeiro usuário
+```bash
+php artisan db:seed --class=UserSeeder
+```
+
+### 7. Rodar o servidor local Laravel
+```bash
+php artisan serve
+```
+
+# pode rodar com xampp, wampp, laragon... 
+
+## ✅ Usuário padrão criado:
+
+- Email: admin@example.com
+
+- Senha: password123
+
+(Se quiser, você pode alterar os dados no arquivo UserSeeder.php antes de rodar o seed.)

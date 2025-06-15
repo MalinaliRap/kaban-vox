@@ -60,12 +60,14 @@ class CategoryController extends Controller
     }
 
     // Deletar (soft delete) uma categoria
-    public function destroy($boardId, $categoryId)
+    public function destroy($categoryId)
     {
-        $board = Board::findOrFail($boardId);
-        $category = $board->categories()->findOrFail($categoryId);
+        $category = Category::with('tasks')->findOrFail($categoryId);
+        if(!empty($category->tasks)){
+            return response()->json(['message' => 'Categoria possui tarefas, exclua-las primeiro'], 400);
+        }
         $category->delete(); // Soft delete
 
-        return response()->json(['message' => 'Category deleted successfully']);
+        return response()->json(['message' => 'Categoria deletada com sucesso']);
     }
 }

@@ -64,13 +64,12 @@ class TaskController extends Controller
     }
 
     // Deletar (soft delete) uma tarefa
-    public function destroy($boardId, $categoryId, $taskId)
+    public function destroy($taskId)
     {
-        $category = Category::findOrFail($categoryId);
-        $task = $category->tasks()->findOrFail($taskId);
+        $task = Task::findOrFail($taskId);
         $task->delete(); // Soft delete
 
-        return response()->json(['message' => 'Task deleted successfully']);
+        return response()->json(['message' => 'Tarefa deletada com sucesso']);
     }
 
     public function move(Request $request, $taskId)

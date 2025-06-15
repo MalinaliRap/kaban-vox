@@ -2,13 +2,13 @@
 
 @section('content')
     <div class="container my-5">
-        <div class="row">
-            <div class="col-md-12">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
                 <h1>Kanban - {{ $board->name }}</h1>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
                 <h5>Descricao: {{ $board->description }}</h5>
             </div>
         </div>
