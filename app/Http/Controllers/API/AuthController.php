@@ -75,14 +75,15 @@ class AuthController extends Controller
     }
 
     function logout(Request $request) {
-        // Verifica se o usuário está autenticado antes de deslogar
-        dd('logout');
-        if (Auth::check()) {
-            Auth::logout(); // Desloga o usuário
-            return response()->json(['message' => 'Logout realizado com sucesso.'], 200); // Resposta de sucesso
+        // Revoga o token do usuário
+        if(!$request->user()->token()) {
+            // Caso o usuário não esteja logado
+            return response()->json(['message' => 'Nenhum usuário logado.'], 400); // Resposta de erro
         }
 
-        // Caso o usuário não esteja logado
-        return response()->json(['message' => 'Nenhum usuário logado.'], 400); // Resposta de erro
+        $request->user()->token()->revoke();
+
+        return response()->json(['message' => 'Logout bem-sucedido!'], 200);
+
     }
 }

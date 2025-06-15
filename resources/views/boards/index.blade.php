@@ -1,45 +1,7 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Criar Novo Quadro - Kanban</title>
+@extends('layouts.app')
 
-    {{-- Bootstrap --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        .kanban-card {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 15px;
-        }
-    </style>
-</head>
-<body class="bg-dark">
-
-{{-- Navbar --}}
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container">
-        <a class="navbar-brand" href="#">Kanban</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    {{-- Formulário de logout --}}
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-danger">Logout</button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
-<div class="container my-5">
+@section('content')
+ <div class="container my-5">
 
     <div class="row justify-content-center">
         <div class="col-md-10">
@@ -147,37 +109,7 @@
     </div>
 
 </div>
+@endsection
+@section('scripts')
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> {{-- jQuery --}}
-
-<script>
-    // Função de logout via AJAX
-    function logout() {
-        $.ajax({
-            url: '{{ route('logout') }}', // URL da rota de logout
-            type: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}' // CSRF token para segurança
-            },
-            success: function(response) {
-                // Se o logout for bem-sucedido
-                alert(response.message); // Exibe a mensagem de sucesso
-                window.location.href = "{{ route('login') }}"; // Redireciona para a página de login
-            },
-            error: function(xhr, status, error) {
-                // Caso o logout falhe ou o usuário não esteja logado
-                alert(xhr.responseJSON.message); // Exibe a mensagem de erro (se não estiver logado)
-            }
-        });
-    }
-
-    $(document).ready(function() {
-        // Ao clicar no botão de logout
-        $('#logoutButton').on('click', function() {
-            logout(); // Chama a função de logout
-        });
-    });
-</script>
-
-</body>
-</html>
+@endsection

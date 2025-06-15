@@ -21,10 +21,8 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-danger">Logout</button>
-                        </form>
+                        <!-- Adicionando o ID ao botão de logout -->
+                        <button id="logoutButton" class="btn btn-danger">Logout</button>
                     </li>
                 </ul>
             </div>
@@ -39,5 +37,38 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     @yield('scripts')  <!-- Scripts adicionais da página -->
+
+    <script>
+        // Função de logout via AJAX
+        function logout() {
+            $.ajax({
+                url: '{{ url("api/logout") }}', // URL da rota de logout
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token') // Token de autenticação no header
+                },
+                data: {
+                    _token: '{{ csrf_token() }}' // CSRF token para segurança
+                },
+                success: function(response) {
+                    // Se o logout for bem-sucedido
+                    alert(response.message); // Exibe a mensagem de sucesso
+                    localStorage.removeItem('token'); // Remove o token do localStorage
+                    window.location.href = "{{ route('login.form') }}"; // Redireciona para a página de login
+                },
+                error: function(xhr, status, error) {
+                    // Caso o logout falhe ou o usuário não esteja logado
+                    alert(xhr.responseJSON.message || "Erro ao realizar logout"); // Exibe a mensagem de erro
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            // Ao clicar no botão de logout
+            $('#logoutButton').on('click', function() {
+                logout(); // Chama a função de logout
+            });
+        });
+    </script>
 </body>
 </html>
