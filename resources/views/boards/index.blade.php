@@ -18,16 +18,6 @@
                         </div>
                     @endif
 
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
                     {{-- Formulário para criar quadro --}}
                     <form id="boardForm">
                         @csrf
@@ -46,62 +36,14 @@
 
             <div class="mt-5">
                 {{-- Exemplo de Quadros (Cards) --}}
-                <h4>Quadros de Exemplo</h4>
+                <div class="card-header bg-primary text-white p-3 mb-5">
+                    <h4>Quadros</h4>
+                </div>
 
                 <div class="kanban-board d-flex flex-wrap gap-4">
-
-                    {{-- Quadro 1 --}}
-                    <div class="kanban-card col-3">
-                        <h5>Quadro 1</h5>
-                        <div class="list-group">
-                            <div class="list-group-item">
-                                Tarefa 1: Criar Layout
-                            </div>
-                            <div class="list-group-item">
-                                Tarefa 2: Definir Backend
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Quadro 2 --}}
-                    <div class="kanban-card col-3">
-                        <h5>Quadro 2</h5>
-                        <div class="list-group">
-                            <div class="list-group-item">
-                                Tarefa 3: Desenvolver API
-                            </div>
-                            <div class="list-group-item">
-                                Tarefa 4: Conectar ao Banco
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Quadro 3 --}}
-                    <div class="kanban-card col-3">
-                        <h5>Quadro 3</h5>
-                        <div class="list-group">
-                            <div class="list-group-item">
-                                Tarefa 5: Testar Funcionalidade
-                            </div>
-                            <div class="list-group-item">
-                                Tarefa 6: Implementar Auth
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Quadro 4 --}}
-                    <div class="kanban-card col-3">
-                        <h5>Quadro 4</h5>
-                        <div class="list-group">
-                            <div class="list-group-item">
-                                Tarefa 7: Deploy Inicial
-                            </div>
-                            <div class="list-group-item">
-                                Tarefa 8: Criar Documentação
-                            </div>
-                        </div>
-                    </div>
-
+                    @foreach ($boards as $board)
+                        @include('boards.card', ['board' => $board])
+                    @endforeach
                 </div>
             </div>
 
@@ -111,5 +53,54 @@
 </div>
 @endsection
 @section('scripts')
+<script>
+    $(document).ready(function() {
+        // Ao clicar no botão de criar quadro
+        $('#boardForm').on('submit', function(e) {
+            e.preventDefault(); // Evita o envio padrão do formulário
 
+            var formData = $(this).serialize(); // Serializa os dados do formulário
+
+            $.ajax({
+                url: '{{ route('boards.store') }}', // URL para a rota de criação de quadro
+                method: 'POST',
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('token')
+                },
+                data: formData,
+                success: function(response) {
+                    // Se a criação do quadro for bem-sucedida, recarrega a página
+                    window.location.reload();
+                },
+                error: function(xhr, status, error) {
+                    // Se ocorrer erro, exibe a mensagem de erro no console
+                    alert('Erro: ' + (xhr.responseJSON.message || 'Erro desconhecido'));
+                }
+            })
+        });
+         // Ao clicar no botão de excluir quadro
+        $('.deleteBoardButton').on('click', function() {
+            var boardId = $(this).data('board-id'); // Obtém o ID do board
+
+            $.ajax({
+                url: '{{ route('boards.destroy', ':id') }}'.replace(':id', boardId), // Rota de exclusão
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token') // Token de autenticação
+                },
+                success: function(response) {
+                    // Se a exclusão for bem-sucedida, remove o card do DOM
+                    alert('Board excluído com sucesso!');
+                    $('.kanban-card[data-board-id="' + boardId + '"]').remove();
+
+                },
+                error: function(xhr, status, error) {
+                    // Se houver erro, exibe a mensagem de erro
+                    alert('Erro: ' + (xhr.responseJSON.message || 'Erro desconhecido'));
+                }
+            });
+        });
+    });
+</script>
 @endsection
+
