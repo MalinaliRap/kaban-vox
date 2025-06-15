@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Board;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use LDAP\Result;
 
 class BoardController extends Controller
 {
     //
-    public function create() {
-          // Verifica se o usuário está logado
+    public function create(Request $request) {
+
     if (!Auth::check()) {
         // Retorna uma resposta JSON informando que o usuário não está autenticado
         return response()->json(['redirect' => route('login')], 401);
