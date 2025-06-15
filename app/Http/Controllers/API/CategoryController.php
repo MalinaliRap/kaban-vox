@@ -44,14 +44,13 @@ class CategoryController extends Controller
     }
 
     // Atualizar uma categoria
-    public function update(Request $request, $boardId, $categoryId)
+    public function update(Request $request, $categoryId)
     {
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
-        $board = Board::findOrFail($boardId);
-        $category = $board->categories()->findOrFail($categoryId);
+        $category = Category::findOrFail($categoryId);
         $category->name = $request->name;
         $category->updated_by = Auth::id(); // Usuário autenticado
         $category->save();

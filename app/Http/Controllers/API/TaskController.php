@@ -18,10 +18,9 @@ class TaskController extends Controller
     }
 
     // Exibir uma tarefa específica
-    public function show($boardId, $categoryId, $taskId)
+    public function show($taskId)
     {
-        $category = Category::findOrFail($categoryId);
-        $task = $category->tasks()->findOrFail($taskId);
+        $task = Task::findOrFail($taskId);
         return response()->json($task);
     }
 
@@ -46,15 +45,15 @@ class TaskController extends Controller
     }
 
     // Atualizar uma tarefa
-    public function update(Request $request, $boardId, $categoryId, $taskId)
+    public function update(Request $request, $taskId)
     {
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
-        $category = Category::findOrFail($categoryId);
-        $task = $category->tasks()->findOrFail($taskId);
+
+        $task = Task::findOrFail($taskId);
         $task->title = $request->title;
         $task->description = $request->description;
         $task->updated_by = Auth::id(); // Usuário autenticado
