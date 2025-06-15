@@ -14,6 +14,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+    <!-- Link para o jQuery UI CDN - DRAG AND DROP -->
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+    <!-- link css public -->
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+
 </head>
 <body class="bg-dark text-white">
 

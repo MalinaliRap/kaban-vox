@@ -72,4 +72,14 @@ class TaskController extends Controller
 
         return response()->json(['message' => 'Task deleted successfully']);
     }
+
+    public function move(Request $request, $taskId)
+    {
+        $task = Task::findOrFail($taskId);
+        $task->category_id = $request->input('category_id');
+        $task->save();
+
+        return response()->json(['success' => true]);
+    }
+
 }

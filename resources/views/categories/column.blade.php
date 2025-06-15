@@ -1,11 +1,16 @@
 <!-- Card com botão para adicionar tarefa -->
-<div class="col-sm-12 col-md-3 col-lg-3">
+<div class="col-sm-12 col-md-4 col-lg-4">
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
             <h4>{{ $category->name }}</h4>
         </div>
-        <div class="card-body">
-            <div class="kanban-column">
+        <div class="card-body bg-dark">
+            <div class="kanban-column" data-category-id="{{ $category->id }}">
+                <div class="list-group task-list">
+                    @foreach ($category->tasks as $task)
+                       @include('tasks.card', ['task' => $task])
+                    @endforeach
+                </div>
                 <div class="list-group">
                     <!-- Botão para abrir o modal -->
                     <button type="button" class="btn btn-primary addTaskButton" data-category-id="{{ $category->id }}">
@@ -44,12 +49,42 @@
                     alert('Tarefa salva com sucesso!');
                     $('#addTaskModal').modal('hide'); // Fecha o modal
                     // Aqui você pode atualizar a lista de tarefas ou fazer outra ação conforme necessário
+                    window.location.reload();
                 },
                 error: function(xhr, status, error) {
                     alert('Erro ao salvar tarefa: ' + xhr.responseJSON.message);
                 }
             });
         });
+
+        //task drag and drop
+         $(".task-list").sortable({
+            connectWith: ".task-list",
+            items: ".kanban-task",
+            placeholder: "ui-state-highlight",
+            receive: function(event, ui) {
+                var taskId = ui.item.data('task-id');
+                var newCategoryId = $(this).closest('.kanban-column').data('category-id');
+                console.log($(this).closest('.kanban-column').data('category-id'));
+                $.ajax({
+                    url: '{{ route('tasks.move', ':id') }}'.replace(':id', taskId),
+                    type: 'POST',
+                    headers: {
+                        authorization: 'Bearer ' + localStorage.getItem('token')
+                    },
+                    data: {
+                        category_id: newCategoryId,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        console.log('Task moved successfully');
+                    },
+                    error: function() {
+                        alert('Erro ao mover a tarefa!');
+                    }
+                });
+            }
+        }).disableSelection();
     });
 </script>
 @endsection

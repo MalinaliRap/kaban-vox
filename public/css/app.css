@@ -1,0 +1,5 @@
+.task-list {
+    min-height: 50px; /* Faz com que a área da coluna seja "dropável" mesmo vazia */
+    padding: 5px;
+}
+

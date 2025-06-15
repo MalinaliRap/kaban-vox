@@ -36,5 +36,6 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/', [TaskController::class, 'index'])->name('tasks.index');
         Route::post('/{category}', [TaskController::class, 'store'])->name('tasks.store');
         Route::delete('/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+        Route::post('/tasks/{task}/move', [TaskController::class, 'move'])->name('tasks.move');
     });
 });
