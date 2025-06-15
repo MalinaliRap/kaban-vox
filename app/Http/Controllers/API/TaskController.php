@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Task;
+use App\Models\Task;
 
 class TaskController extends Controller
 {
@@ -26,7 +26,7 @@ class TaskController extends Controller
     }
 
     // Criar uma nova tarefa
-    public function store(Request $request, $boardId, $categoryId)
+    public function store(Request $request, $categoryId)
     {
         $request->validate([
             'title' => 'required|string|max:255',

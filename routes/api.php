@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BoardController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\TaskController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,8 +33,8 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::prefix('/tasks')->group(function () {
-        Route::get('/', [CategoryController::class, 'index'])->name('tasks.index');
-        Route::post('/{category}', [CategoryController::class, 'store'])->name('tasks.store');
-        Route::delete('/{task}', [CategoryController::class, 'destroy'])->name('tasks.destroy');
+        Route::get('/', [TaskController::class, 'index'])->name('tasks.index');
+        Route::post('/{category}', [TaskController::class, 'store'])->name('tasks.store');
+        Route::delete('/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
     });
 });

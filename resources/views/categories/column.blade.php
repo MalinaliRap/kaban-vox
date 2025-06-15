@@ -32,10 +32,13 @@
         // Ação ao salvar a tarefa
         $('#saveTaskButton').on('click', function() {
             var formData = $('#taskForm').serialize(); // Serializa os dados do formulário
-
+            var categoryId = $('#categoryId').val(); // Obtém o ID da categoria
             $.ajax({
-                url: '{{ route('tasks.store', $board->id) }}', // Rota para armazenar a tarefa (substitua conforme necessário)
+                url: '{{ route('tasks.store', ['category' => 'categoryId']) }}'.replace('categoryId', categoryId), // Passa o categoryId para a URL
                 method: 'POST',
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('token')
+                },
                 data: formData,
                 success: function(response) {
                     alert('Tarefa salva com sucesso!');
