@@ -5,7 +5,7 @@
                 {{ $board->description }}
             </div>
             <div class="list-group-item">
-                <button class="btn btn-primary" id="viewBoardButton">
+                <button class="btn btn-primary viewBoardButton" data-board-id="{{ $board->id }}">
                     <i class="bi bi-eye"></i>
                 </button>
                 <button class="btn btn-danger deleteBoardButton" data-board-id="{{ $board->id }}">

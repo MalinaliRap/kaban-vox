@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BoardController;
+use App\Http\Controllers\API\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,8 +22,18 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('/boards')->group(function () {
         Route::get('/', [BoardController::class, 'index'])->name('boards.index');
         Route::post('/', [BoardController::class, 'store'])->name('boards.store');
-        Route::get('/{board}', [BoardController::class, 'show'])->name('boards.show');
-        Route::put('/{board}', [BoardController::class, 'update'])->name('boards.update');
         Route::delete('/{board}', [BoardController::class, 'destroy'])->name('boards.destroy');
+    });
+
+    Route::prefix('/categories')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
+        Route::post('/{board}', [CategoryController::class, 'store'])->name('categories.store');
+        Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    });
+
+    Route::prefix('/tasks')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('tasks.index');
+        Route::post('/{category}', [CategoryController::class, 'store'])->name('tasks.store');
+        Route::delete('/{task}', [CategoryController::class, 'destroy'])->name('tasks.destroy');
     });
 });

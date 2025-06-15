@@ -12,12 +12,6 @@
                 </div>
                 <div class="card-body">
 
-                    @if (session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
                     {{-- Formulário para criar quadro --}}
                     <form id="boardForm">
                         @csrf
@@ -99,6 +93,12 @@
                     alert('Erro: ' + (xhr.responseJSON.message || 'Erro desconhecido'));
                 }
             });
+        });
+
+        $('.viewBoardButton').on('click', function() {
+            var boardId = $(this).data('board-id'); // Obtém o ID do board
+            console.log( '{{ route('kanban', ':id') }}'.replace(':id', boardId));
+            window.location.href = '{{ route('kanban', ':id') }}'.replace(':id', boardId);
         });
     });
 </script>

@@ -11,5 +11,9 @@ Route::get('/', [AuthController::class, 'showLoginForm'])->name('login.form');
 // Dashboard - Para usuários logados
 Route::get('/dashboard', [BoardController::class, 'index'])->name('dashboard');
 
+// Kanban - Para usuários logados
+
+Route::get('/kanban/{id}', [BoardController::class, 'kanban'])->name('kanban');
+
 // Logout - Para deslogar usuários
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');

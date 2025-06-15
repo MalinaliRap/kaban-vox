@@ -18,6 +18,11 @@ class BoardController extends Controller
         return view('boards.index', compact('boards'));
     }
 
+    public function kanban($id) {
+        $board = Board::with('categories')->findOrFail($id);
+        return view('kanban.index', compact('board'));
+    }
+
     // Exibir um board específico
     public function show($id)
     {
