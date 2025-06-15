@@ -1,12 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\BoardController;
 
 use Illuminate\Support\Facades\Auth;
-Route::get('/', [App\Http\Controllers\API\AuthController::class, 'index'])->name('index');
-Route::get('/login', [App\Http\Controllers\API\AuthController::class, 'index'])->name('login');
-Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
+// Página de Login - Mostra o formulário de login
+Route::get('/', [AuthController::class, 'showLoginForm'])->name('login.form');
 
-Route::prefix('boards')->group(function () {
-    Route::get('/create', [App\Http\Controllers\API\BoardController::class, 'create'])->name('boards.create');
-});
+// Dashboard - Para usuários logados
+Route::get('/dashboard', [BoardController::class, 'index'])->name('dashboard');
+
+// Logout - Para deslogar usuários
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');

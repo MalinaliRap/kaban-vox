@@ -10,22 +10,12 @@ use LDAP\Result;
 
 class BoardController extends Controller
 {
-    //
-    public function create(Request $request) {
-
-    if (!Auth::check()) {
-        // Retorna uma resposta JSON informando que o usuário não está autenticado
-        return response()->json(['redirect' => route('login')], 401);
-    }
-        $boards = Board::all();
-        return view('boards.create', compact('boards'));
-    }
 
  // Exibir todos os boards
     public function index()
     {
         $boards = Board::all(); // Pode adicionar filtros ou ordenação, conforme necessário
-        return response()->json($boards);
+        return view('boards.index', compact('boards'));
     }
 
     // Exibir um board específico

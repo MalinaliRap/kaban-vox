@@ -28,7 +28,11 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <button id="logoutButton" class="btn btn-danger">Logout</button>
+                    {{-- Formulário de logout --}}
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
                 </li>
             </ul>
         </div>
@@ -147,30 +151,22 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> {{-- jQuery --}}
 
 <script>
-    // Função de logout
+    // Função de logout via AJAX
     function logout() {
-        var token = localStorage.getItem('token'); // Ou de onde você armazena o token
-
-        if (!token) {
-            alert('Token não encontrado.');
-            return;
-        }
-
         $.ajax({
-            url: '{{ route('logout') }}', // Rota de logout
+            url: '{{ route('logout') }}', // URL da rota de logout
             type: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token // Envia o token no cabeçalho
-            },
             data: {
-                _token: '{{ csrf_token() }}' // CSRF token para garantir a segurança
+                _token: '{{ csrf_token() }}' // CSRF token para segurança
             },
             success: function(response) {
-                alert(response.message); // Exibe a resposta de sucesso
-                window.location.href = "/"; // Redireciona para a página inicial
+                // Se o logout for bem-sucedido
+                alert(response.message); // Exibe a mensagem de sucesso
+                window.location.href = "{{ route('login') }}"; // Redireciona para a página de login
             },
             error: function(xhr, status, error) {
-                alert('Erro ao realizar logout'); // Exibe a mensagem de erro
+                // Caso o logout falhe ou o usuário não esteja logado
+                alert(xhr.responseJSON.message); // Exibe a mensagem de erro (se não estiver logado)
             }
         });
     }
@@ -178,35 +174,7 @@
     $(document).ready(function() {
         // Ao clicar no botão de logout
         $('#logoutButton').on('click', function() {
-            logout();
-        });
-
-        // Manipulando o envio do formulário com AJAX para criar um novo Quadro
-        $('#boardForm').submit(function(e) {
-            e.preventDefault();  // Impede o envio normal do formulário
-
-            var name = $('#name').val();
-            var description = $('#description').val();
-            var csrf_token = $('input[name="_token"]').val();  // Pega o CSRF token
-
-            // Envia a requisição AJAX
-            $.ajax({
-                url: '{{ route('boards.store') }}',  // Rota de criação do quadro
-                method: 'POST',
-                data: {
-                    _token: csrf_token,
-                    name: name,
-                    description: description
-                },
-                success: function(response) {
-                    alert('Quadro criado com sucesso!');
-                    // Aqui você pode atualizar a página ou a lista de quadros sem recarregar
-                    // Exemplo: Adicionar o novo quadro à lista de quadros
-                },
-                error: function(xhr, status, error) {
-                    alert('Erro ao criar o quadro: ' + error);
-                }
-            });
+            logout(); // Chama a função de logout
         });
     });
 </script>

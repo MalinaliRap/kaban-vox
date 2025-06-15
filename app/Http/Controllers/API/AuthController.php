@@ -11,14 +11,9 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    function index() {
-         // Verifica se o usuário está autenticado
-        if (Auth::check()) {
-            return redirect()->route('boards.create'); // Redireciona para o painel se já estiver logado
-        }
+    function showLoginForm() {
+        return view('auth.login'); // Exibe o formulário de login
 
-        // Exibe o formulário de login com erros, caso existam
-        return view('auth.login');
     }
     //
     function register(Request $request) {
@@ -49,23 +44,30 @@ class AuthController extends Controller
     }
 
     function login(Request $request) {
-
+        // Validação dos dados de login
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:255',
+            'email' => 'required|email',
             'password' => 'required|string|min:6',
         ]);
 
-        // Se a validação falhar, redireciona de volta com erros
+        // Se a validação falhar
         if ($validator->fails()) {
-            return redirect()->route('index')->withErrors($validator)->withInput();
-        }
-        // Tentando autenticar o usuário
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect()->route('boards.create'); // Redireciona para o painel após login bem-sucedido
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Se as credenciais forem inválidas, exibe um erro
-        return back()->withErrors(['email' => 'Credenciais inválidas'])->withInput();
+        // Tentando autenticar o usuário
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            $user = auth()->user();
+             $token = $user->createToken('UserToken')->accessToken; // Gera o token usando Sanctum ou Passport
+
+            return response()->json([
+                'token' => $token,
+                'message' => 'Login bem-sucedido!'
+            ], 200);
+        }
+
+        // Se as credenciais forem inválidas
+        return response()->json(['message' => 'Credenciais inválidas'], 401);
     }
 
     function user(Request $request) {
@@ -73,8 +75,14 @@ class AuthController extends Controller
     }
 
     function logout(Request $request) {
-       // Revogar o token do usuário
-        $user = Auth::logout();
-        return response()->json(['message' => 'User logged out successfully.'], 200);
+        // Verifica se o usuário está autenticado antes de deslogar
+        dd('logout');
+        if (Auth::check()) {
+            Auth::logout(); // Desloga o usuário
+            return response()->json(['message' => 'Logout realizado com sucesso.'], 200); // Resposta de sucesso
+        }
+
+        // Caso o usuário não esteja logado
+        return response()->json(['message' => 'Nenhum usuário logado.'], 400); // Resposta de erro
     }
 }

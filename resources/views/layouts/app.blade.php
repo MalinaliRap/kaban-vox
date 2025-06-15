@@ -5,66 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config('app.name', 'Kanban') }}</title>
 
-    {{-- Bootstrap CSS via CDN --}}
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    {{-- jQuery via CDN --}}
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-    {{-- Custom CSS --}}
-    <style>
-        body {
-            background-color: #343a40; /* Fundo escuro */
-            color: #fff; /* Texto claro */
-            font-family: Arial, sans-serif;
-            height: 100vh; /* Garantir que a altura ocupe toda a tela */
-        }
-
-        .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh; /* Garantir que ocupe toda a altura da janela */
-        }
-
-        .card {
-            width: 100%;
-            max-width: 400px;  /* Largura máxima do card */
-            height: auto;  /* A altura será ajustada conforme o conteúdo */
-            margin: 15px;  /* Espaçamento em torno do card */
-            border-radius: 8px; /* Bordas arredondadas */
-        }
-
-        @media (max-width: 576px) {
-            .card {
-                width: 100%; /* Card ocupa 100% da largura em telas pequenas */
-                padding: 20px; /* Adiciona um pequeno preenchimento no card */
-            }
-        }
-
-        /* Responsividade para garantir que o formulário seja quadrado em telas maiores */
-        @media (min-width: 577px) {
-            .card {
-                max-width: 400px;  /* Máximo de largura para a tela maior */
-                width: 100%;
-                height: 400px; /* Para que o card tenha um aspecto de quadrado */
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                padding: 20px;
-            }
-        }
-    </style>
 </head>
-<body class="bg-dark">
+<body class="bg-dark text-white">
 
-{{-- Conteúdo da página --}}
-<div class="login-container">
-    @yield('content') <!-- Aqui o conteúdo específico da página de login será renderizado -->
-</div>
+    <!-- Barra de navegação para usuários logados -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ route('dashboard') }}">Kanban</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-danger">Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-{{-- Bootstrap JS --}}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Conteúdo da página -->
+    <div class="container mt-5">
+        @yield('content')  <!-- Aqui o conteúdo da página do usuário logado será injetado -->
+    </div>
 
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @yield('scripts')  <!-- Scripts adicionais da página -->
 </body>
 </html>
